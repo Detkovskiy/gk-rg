@@ -1,14 +1,21 @@
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+body {
+ // background: url('../img/backgrounds/bg-body.jpg');
+  color: $primary__black;
+  font-size: 18px;
+  line-height: 22px;
+
+}
+
+
 h1 {
   font-size: 10px;
   color: aqua;
-}
-
-div {
-  display: flex;
-  color: aliceblue;
-}
-
-p {
-  color: #222222;
-  display: flex;
 }

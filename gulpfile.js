@@ -1,5 +1,5 @@
 "use strict";
-// Начало - Подключаю плагины -
+
 var gulp = require("gulp");
 var sass = require("gulp-sass");
 var plumber = require("gulp-plumber");
@@ -15,104 +15,107 @@ var run = require("run-sequence");
 var del = require("del");
 var uglify = require("gulp-uglify");
 var server = require("browser-sync").create();
-// Конец
 
-gulp.task("style", function() {     // создает задачу "style"
-  gulp.src("sass/style.scss")       // указывает какие файлы(где лежат) использовать для выполнения задачи
-    .pipe(plumber())               // плагин отслеживающий ошибки
-    .pipe(sass())                  // включаеет сборщик sass файлов в файл css
-    .pipe(postcss([                // включает модуль для изменения сss
-      autoprefixer({browsers: [    // подключение плагина для postcss
-        "last 2 version",          // указывет для каких версий браузеров расставлять префиксы
+gulp.task("style", function() {
+  gulp.src("sass/style.scss")
+    .pipe(plumber())
+    .pipe(sass())
+    .pipe(postcss([
+      autoprefixer({browsers: [
+        "last 2 version",
         "last 2 Chrome versions",
         "last 2 Firefox versions",
         "last 2 Opera versions",
         "last 2 Edge versions"
       ]}),
-      mqpacker({                   // подключение плагина для группировки медиазапросов
-        sort: true                 // сортировка от минимального значения
+      mqpacker({
+        sort: true
       })
     ]))
-    .pipe(gulp.dest("build/css"))   // указывает, куда положить файл после выполнения задач
-    .pipe(minify())                 // включение плагина для минификации файла css
-    .pipe(rename("style.min.css"))  // переименовывает минифицированный файл
-    .pipe(gulp.dest("build/css"))   // указывает, куда положить переименованный минифицированный файл
-    .pipe(server.reload({stream: true})); // перезагрузка браузера
+    .pipe(gulp.dest("build/css"))
+    .pipe(minify())
+    .pipe(rename("style.min.css"))
+    .pipe(gulp.dest("build/css"))
+    .pipe(server.reload({stream: true}));
 });
 
-gulp.task("scripts", function() {  // минификация js
+gulp.task("scripts", function() {
   return gulp.src("js/*.js")
-  //  .pipe(uglify())                // плагин минификации js
+   // .pipe(uglify())
     .pipe(gulp.dest("build/js"));
 });
 
 // задача для создания svg спрайтов
 gulp.task("symbols", function() {
   return gulp.src("build/img/icons/*.svg")
-    .pipe(svgmin())                    // плагин минификации SVG файлов
-    .pipe(svgstore({                   // плагин для сборки спрайта
+    .pipe(svgmin())
+    .pipe(svgstore({
       inlineSvg: true
     }))
-    .pipe(rename("symbols.svg"))       // переименовывает спрайт
+    .pipe(rename("symbols.svg"))
     .pipe(gulp.dest("build/img"));
 });
 
 // задача для оптимизации картинок
 gulp.task("images", function() {
   return gulp.src("build/img/**/*.{png,jpg,gif}")
-    .pipe(imagemin([                            // плагин
-      imagemin.optipng({optimizationLevel: 3}), // параметры качества оптимизиции
+    .pipe(imagemin([
+      imagemin.optipng({optimizationLevel: 3}),
       imagemin.jpegtran({progressive: true})
     ]))
     .pipe(gulp.dest("build/img"));
 });
 
 // настройка "живого сервера"
-gulp.task("serve", function() {   //задача по запуску сервера
+gulp.task("serve", function() {
   server.init({
-    server: "build",              // папка из которой он должен запуститься
+    server: "build"
   });
 
-  gulp.watch("sass/**/*.{scss,sass}", ["style"]);     // отслеживание изменения файлов sass и запуск задачи style
-  gulp.watch("js/**/*.js", ["scripts"]);       // при изменении js копируем в build, минифицируем и перезагружаем сервер
+  gulp.watch("sass/**/*.{scss,sass}", ["style"]);
+  gulp.watch("js/**/*.js", ["scripts"]);
   gulp.watch("build/js/**/*.js").on("change", server.reload);
-  gulp.watch("*.html", ["copyhtml"]);                // при изменении html запустить зачаду copyhtml
-  gulp.watch("build/*.html").on("change", server.reload);  // при изменении файлов html в папке build  перезагрузить сервер
+  gulp.watch("*.html", ["copyhtml"]);
+  gulp.watch("build/*.html").on("change", server.reload);
 });
 
 gulp.task("copyhtml", function() {
-  return gulp.src("*.html")        // откуда копировать html и js
-    .pipe(gulp.dest("build/"));      // куда копировать файлы
+  return gulp.src("*.html")
+    .pipe(gulp.dest("build/"));
 });
 
 
 //-----------------------------------------------
-gulp.task("copy", function() {     // задача по копированию исходных файлов сайта в папку build
+gulp.task("copy", function() {
   return gulp.src([
-    "fonts/**/*.{woff,woff2}",     // что копировать
+    "fonts/**",
     "img/**",
     "js/**",
+    "*.php",
+    "*.png",
+    "*.txt",
+    "css/**",
     "*.html"
   ], {
-    base: "."                     // указываем что исходные папки должны остаться (файловая структура должна остаться как в исходниках)
+    base: "."
   })
-    .pipe(gulp.dest("build"));      // куда копировать
+    .pipe(gulp.dest("build"));
 });
 
 //-----------------------------------------------
-gulp.task("clean", function() {    // задача по удалению папки build
+gulp.task("clean", function() {
   return del("build");
 });
 
 //-----------------------------------------------
-gulp.task("build", function(fn) {   // задача по сборке
+gulp.task("build", function(fn) {
   run(
-    "clean",                        // удаляем папку
-    "copy",                         // копируем исходные файлы
-    "style",                        // проводим все оптимизации
+    "clean",
+    "copy",
+    "style",
     "images",
     "symbols",
     "scripts",
-    fn                               // выход из задачи
+    fn
   );
 });
