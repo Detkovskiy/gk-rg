@@ -11,6 +11,7 @@ body {
   color: $primary__black;
   font-size: 18px;
   line-height: 22px;
+  font-family: 'Oswald', sans-serif;
 
 }
 
@@ -18,4 +19,33 @@ body {
 h1 {
   font-size: 10px;
   color: aqua;
+}
+
+header {
+  padding: 10px 0 90px;
+  width: 100%;
+  background: $primary__white;
+}
+
+@media (min-width: 1000px) {
+  header {
+    position: fixed;
+    padding: 5px 0;
+    top: 0;
+    z-index: 1002;
+  }
+}
+
+
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}
+
+@font-face {
+  font-family: 'VolvoBroadProDigital';
+  src: url('../fonts/VolvoBroadProDigital-webfont.woff') format('woff');
 }

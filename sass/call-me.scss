@@ -1,0 +1,111 @@
+#sub-menu {
+  position: fixed;
+  width: 90%;
+  z-index: 1001;
+}
+
+.call-me {
+  position: relative;
+  padding: 15px 0;
+  display: flex;
+  order: 1;
+  width: 100%;
+  justify-content: space-between;
+
+  &:before {
+    position: absolute;
+    content: "";
+    width: 9999px;
+    height: 90px;
+    top: 0;
+    left: -99px;
+    background: $primary__white;
+    z-index: -1;
+  }
+}
+
+.call-me__icon {
+  margin-right: 10px;
+  height: 45px;
+}
+
+.call-me___wrapper {
+  display: flex;
+
+  &:hover .call-me__icon {
+    transform: rotate(-20deg);
+  }
+}
+
+.call-me__block {
+  display: flex;
+  flex-direction: column;
+  width: 215px;
+}
+
+.call-me__phone {
+  margin-bottom: 7px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: bold;
+  color: $primary__black;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &--color {
+    color: $alt-color-text;
+  }
+}
+
+.call-me__callback-toggle {
+  color: $alt-color-text;
+  font-size: 15px;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+@media (min-width: 1000px) {
+  #sub-menu {
+    position: initial;
+    width: initial;
+  }
+
+  .call-me {
+    position: relative;
+    padding: 15px 0;
+    display: flex;
+    order: 1;
+    width: 100%;
+    justify-content: space-between;
+    background: #2c2c2c;
+
+    &:before {
+      display: none;
+    }
+  }
+
+  .call-me__block {
+    width: 230px;
+  }
+
+  .call-me__phone {
+    font-size: 42px;
+    line-height: 31px;
+    display: block;
+  }
+
+  .call-me__callback-toggle {
+    margin-top: 5px;
+    font-size: 15px;
+  }
+
+  .call-me__icon {
+    margin-right: 14px;
+    height: 54px;
+  }
+}
